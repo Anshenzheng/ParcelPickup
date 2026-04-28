@@ -1,0 +1,43 @@
+<nav class="navbar">
+  <div class="container navbar-container">
+    <a routerLink="/home" class="navbar-brand">
+      <span class="logo-icon">📦</span>
+      <span class="logo-text">校园快递代取</span>
+    </a>
+    
+    <div class="navbar-menu" [class.active]="showMobileMenu">
+      <div class="navbar-nav">
+        <a routerLink="/home" routerLinkActive="active" (click)="showMobileMenu = false">首页</a>
+        <a routerLink="/parcels" routerLinkActive="active" (click)="showMobileMenu = false">快递大厅</a>
+        <ng-container *ngIf="isAuthenticated">
+          <a routerLink="/parcels/create" routerLinkActive="active" (click)="showMobileMenu = false">发布需求</a>
+          <a routerLink="/my-parcels" routerLinkActive="active" (click)="showMobileMenu = false">我的订单</a>
+        </ng-container>
+        <ng-container *ngIf="isAdmin">
+          <a routerLink="/admin/dashboard" routerLinkActive="active" (click)="showMobileMenu = false">管理后台</a>
+        </ng-container>
+      </div>
+      
+      <div class="navbar-auth">
+        <ng-container *ngIf="!isAuthenticated">
+          <a routerLink="/login" class="btn btn-secondary btn-sm" (click)="showMobileMenu = false">登录</a>
+          <a routerLink="/register" class="btn btn-primary btn-sm" (click)="showMobileMenu = false">注册</a>
+        </ng-container>
+        <ng-container *ngIf="isAuthenticated">
+          <div class="user-info">
+            <span class="user-name">{{ currentUser?.username }}</span>
+            <ng-container *ngIf="isAdmin">
+              <span class="badge badge-primary">管理员</span>
+            </ng-container>
+          </div>
+          <button class="btn btn-secondary btn-sm" (click)="logout()">退出</button>
+        </ng-container>
+      </div>
+    </div>
+    
+    <button class="mobile-menu-btn" (click)="toggleMobileMenu()">
+      <span *ngIf="!showMobileMenu">☰</span>
+      <span *ngIf="showMobileMenu">✕</span>
+    </button>
+  </div>
+</nav>

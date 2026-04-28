@@ -1,0 +1,135 @@
+.page-header {
+  margin-bottom: 32px;
+}
+
+.page-title {
+  font-size: 28px;
+  font-weight: 800;
+  background: var(--bg-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+
+.page-subtitle {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.create-form-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 40px;
+}
+
+.create-form {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.form-section {
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--bg-secondary);
+}
+
+.form-section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-title::before {
+  content: '';
+  width: 4px;
+  height: 20px;
+  background: var(--bg-gradient);
+  border-radius: 2px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.required {
+  color: var(--danger-color);
+}
+
+.form-control {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid var(--bg-secondary);
+  border-radius: var(--border-radius);
+  font-size: 14px;
+  transition: var(--transition);
+  background: var(--bg-primary);
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+}
+
+.form-control.invalid {
+  border-color: var(--danger-color);
+}
+
+.form-error {
+  color: var(--danger-color);
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+textarea.form-control {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  padding-top: 16px;
+}
+
+@media (max-width: 768px) {
+  .create-form-container {
+    padding: 24px;
+  }
+  
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .form-actions .btn {
+    width: 100%;
+  }
+}

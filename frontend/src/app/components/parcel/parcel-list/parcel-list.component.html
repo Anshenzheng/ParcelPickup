@@ -1,0 +1,84 @@
+<div class="container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">快递大厅</h1>
+      <p class="page-subtitle">浏览并接取校园快递代取需求</p>
+    </div>
+    <button class="btn btn-primary" (click)="goToCreate()">
+      发布需求
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+  </div>
+
+  <div *ngIf="!loading && parcels.length === 0" class="empty-state">
+    <div class="empty-state-icon">📭</div>
+    <p class="empty-state-text">暂无待接订单</p>
+    <p class="empty-state-hint">快来发布第一个订单吧</p>
+    <button class="btn btn-primary" (click)="goToCreate()">
+      发布需求
+    </button>
+  </div>
+
+  <div *ngIf="!loading && parcels.length > 0" class="parcels-list">
+    <div *ngFor="let parcel of parcels" class="parcel-item card" [routerLink]="['/parcels', parcel.id]">
+      <div class="parcel-main">
+        <div class="parcel-left">
+          <div class="parcel-header">
+            <span class="badge" [ngClass]="getStatusBadge(parcel.status)">{{ getStatusName(parcel.status) }}</span>
+            <span class="parcel-reward">¥{{ parcel.reward }}</span>
+          </div>
+          <h3 class="parcel-title">
+            <span class="icon">📦</span>
+            {{ parcel.expressPoint?.name || '快递点' }} → {{ parcel.deliveryAddress }}
+          </h3>
+          <div class="parcel-details">
+            <div class="detail-item">
+              <span class="detail-label">取件码:</span>
+              <span class="detail-value">{{ parcel.pickupCode }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">联系人:</span>
+              <span class="detail-value">{{ parcel.contactPerson }} ({{ parcel.contactPhone }})</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">包裹类型:</span>
+              <span class="detail-value">{{ parcel.parcelType || '普通' }}</span>
+            </div>
+            <div *ngIf="parcel.weight" class="detail-item">
+              <span class="detail-label">重量:</span>
+              <span class="detail-value">{{ parcel.weight }}kg</span>
+            </div>
+          </div>
+        </div>
+        <div class="parcel-right">
+          <div class="parcel-info">
+            <div class="info-row">
+              <span class="info-label">发布者:</span>
+              <span class="info-value">{{ parcel.publisher?.username || '未知' }}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">发布时间:</span>
+              <span class="info-value">{{ formatDate(parcel.createdAt) }}</span>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-sm" (click)="$event.stopPropagation()">
+            查看详情
+          </button>
+        </div>
+      </div>
+      <div *ngIf="parcel.remark" class="parcel-remark">
+        <span class="remark-label">备注:</span>
+        <span class="remark-text">{{ parcel.remark }}</span>
+      </div>
+    </div>
+  </div>
+
+  <app-pagination 
+    *ngIf="pageResult && pageResult.totalPages > 1"
+    [pageResult]="pageResult"
+    (pageChange)="onPageChange($event)">
+  </app-pagination>
+</div>

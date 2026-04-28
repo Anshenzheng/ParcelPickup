@@ -1,0 +1,138 @@
+<div class="container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">管理后台</h1>
+      <p class="page-subtitle">查看和管理校园快递代取系统</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary btn-sm" (click)="exportStatistics()">
+        导出统计数据
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+  </div>
+
+  <div *ngIf="!loading && statistics" class="dashboard-content">
+    <div class="stats-cards grid grid-4">
+      <div class="stat-card card">
+        <div class="stat-icon total">📦</div>
+        <div class="stat-content">
+          <div class="stat-value">{{ statistics.totalParcels }}</div>
+          <div class="stat-label">总订单数</div>
+        </div>
+      </div>
+      <div class="stat-card card">
+        <div class="stat-icon pending">⏳</div>
+        <div class="stat-content">
+          <div class="stat-value">{{ statistics.pendingReview + statistics.pendingAccept }}</div>
+          <div class="stat-label">待处理订单</div>
+        </div>
+      </div>
+      <div class="stat-card card">
+        <div class="stat-icon completed">✅</div>
+        <div class="stat-content">
+          <div class="stat-value">{{ statistics.completed }}</div>
+          <div class="stat-label">已完成订单</div>
+        </div>
+      </div>
+      <div class="stat-card card">
+        <div class="stat-icon rate">📊</div>
+        <div class="stat-content">
+          <div class="stat-value">{{ statistics.completionRate }}</div>
+          <div class="stat-label">完成率</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-detail grid grid-2">
+      <div class="detail-card card">
+        <h3 class="section-title">订单状态分布</h3>
+        <div class="status-list">
+          <div class="status-item">
+            <span class="status-label">待审核</span>
+            <span class="status-count badge badge-warning">{{ statistics.pendingReview }}</span>
+          </div>
+          <div class="status-item">
+            <span class="status-label">待接单</span>
+            <span class="status-count badge badge-primary">{{ statistics.pendingAccept }}</span>
+          </div>
+          <div class="status-item">
+            <span class="status-label">已接单</span>
+            <span class="status-count badge badge-primary">{{ statistics.accepted }}</span>
+          </div>
+          <div class="status-item">
+            <span class="status-label">配送中</span>
+            <span class="status-count badge badge-warning">{{ statistics.delivering }}</span>
+          </div>
+          <div class="status-item">
+            <span class="status-label">已完成</span>
+            <span class="status-count badge badge-success">{{ statistics.completed }}</span>
+          </div>
+          <div class="status-item">
+            <span class="status-label">已取消</span>
+            <span class="status-count badge badge-secondary">{{ statistics.cancelled }}</span>
+          </div>
+          <div class="status-item">
+            <span class="status-label">已下架</span>
+            <span class="status-count badge badge-danger">{{ statistics.removed }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-card card">
+        <div class="card-header">
+          <h3 class="section-title">近期趋势</h3>
+          <select class="form-control filter-select" [(ngModel)]="daysRange" (change)="onDaysChange()">
+            <option [value]="7">近7天</option>
+            <option [value]="14">近14天</option>
+            <option [value]="30">近30天</option>
+          </select>
+        </div>
+        <div class="trend-list">
+          <div *ngFor="let data of getDailyData()" class="trend-item">
+            <div class="trend-date">{{ formatDate(data.date) }}</div>
+            <div class="trend-stats">
+              <span class="trend-stat new">
+                新订单: <strong>{{ data.newOrders }}</strong>
+              </span>
+              <span class="trend-stat completed">
+                完成: <strong>{{ data.completedOrders }}</strong>
+              </span>
+              <span class="trend-stat reward">
+                酬劳: <strong>¥{{ data.totalRewards.toFixed(2) }}</strong>
+              </span>
+            </div>
+          </div>
+          <div *ngIf="getDailyData().length === 0" class="empty-state">
+            暂无数据
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="quick-actions card">
+      <h3 class="section-title">快捷操作</h3>
+      <div class="actions-grid">
+        <a routerLink="/admin/parcels" class="action-card">
+          <div class="action-icon">📋</div>
+          <div class="action-text">订单管理</div>
+        </a>
+        <a routerLink="/admin/users" class="action-card">
+          <div class="action-icon">👥</div>
+          <div class="action-text">用户管理</div>
+        </a>
+        <a routerLink="/admin/parcels" [queryParams]="{ status: 0 }" class="action-card">
+          <div class="action-icon">📝</div>
+          <div class="action-text">审核订单</div>
+        </a>
+        <button class="action-card" (click)="exportStatistics()">
+          <div class="action-icon">📥</div>
+          <div class="action-text">导出数据</div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

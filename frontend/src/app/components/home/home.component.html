@@ -1,0 +1,126 @@
+<div class="hero-section">
+  <div class="container">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1 class="hero-title">校园快递代取系统</h1>
+        <p class="hero-subtitle">让校园生活更便捷，让取件不再烦恼</p>
+        <div class="hero-actions">
+          <a routerLink="/parcels" class="btn btn-primary btn-lg">
+            浏览订单
+          </a>
+          <ng-container *ngIf="isAuthenticated">
+            <a routerLink="/parcels/create" class="btn btn-secondary btn-lg">
+              发布需求
+            </a>
+          </ng-container>
+          <ng-container *ngIf="!isAuthenticated">
+            <a routerLink="/register" class="btn btn-secondary btn-lg">
+              立即注册
+            </a>
+          </ng-container>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-icon">📦</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="features-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">为什么选择我们</h2>
+      <p class="section-subtitle">专为校园场景设计，让快递代取更简单</p>
+    </div>
+    <div class="features grid grid-3">
+      <div class="feature-card card">
+        <div class="feature-icon">🚀</div>
+        <h3 class="feature-title">快速便捷</h3>
+        <p class="feature-desc">一键发布需求，快速响应，节省您的宝贵时间</p>
+      </div>
+      <div class="feature-card card">
+        <div class="feature-icon">💰</div>
+        <h3 class="feature-title">合理酬劳</h3>
+        <p class="feature-desc">自主定价，公开透明，合理的酬劳机制</p>
+      </div>
+      <div class="feature-card card">
+        <div class="feature-icon">🔒</div>
+        <h3 class="feature-title">安全可靠</h3>
+        <p class="feature-desc">实名认证，订单追踪，保障您的权益</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="recent-parcels-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">最新需求</h2>
+      <a routerLink="/parcels" class="btn btn-secondary btn-sm">查看全部 →</a>
+    </div>
+    
+    <div *ngIf="loading" class="loading">
+      <div class="spinner"></div>
+    </div>
+    
+    <div *ngIf="!loading && recentParcels.length === 0" class="empty-state">
+      <div class="empty-state-icon">📭</div>
+      <p class="empty-state-text">暂无订单</p>
+      <p class="empty-state-hint">快来发布第一个订单吧</p>
+    </div>
+    
+    <div *ngIf="!loading && recentParcels.length > 0" class="parcels-grid grid grid-3">
+      <div *ngFor="let parcel of recentParcels" class="parcel-card card" [routerLink]="['/parcels', parcel.id]">
+        <div class="parcel-header">
+          <span class="badge" [ngClass]="getStatusBadge(parcel.status)">{{ getStatusName(parcel.status) }}</span>
+          <span class="parcel-reward">¥{{ parcel.reward }}</span>
+        </div>
+        <h3 class="parcel-title">{{ parcel.expressPoint?.name || '快递点' }}</h3>
+        <div class="parcel-info">
+          <div class="info-item">
+            <span class="info-label">送达:</span>
+            <span class="info-value">{{ parcel.deliveryAddress }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">联系人:</span>
+            <span class="info-value">{{ parcel.contactPerson }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">发布时间:</span>
+            <span class="info-value">{{ formatDate(parcel.createdAt) }}</span>
+          </div>
+        </div>
+        <div *ngIf="parcel.remark" class="parcel-remark">
+          {{ parcel.remark }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="how-it-works-section">
+  <div class="container">
+    <div class="section-header">
+      <h2 class="section-title">如何使用</h2>
+      <p class="section-subtitle">三步轻松搞定快递代取</p>
+    </div>
+    <div class="steps grid grid-3">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h3 class="step-title">发布需求</h3>
+        <p class="step-desc">填写快递信息，设置合理酬劳，一键发布</p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h3 class="step-title">等待接单</h3>
+        <p class="step-desc">有同学看到需求后会主动接单</p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h3 class="step-title">签收确认</h3>
+        <p class="step-desc">快递送达后确认完成，交易结束</p>
+      </div>
+    </div>
+  </div>
+</div>
