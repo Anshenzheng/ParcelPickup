@@ -142,6 +142,10 @@ export class MyParcelsComponent implements OnInit {
     this.router.navigate(['/parcels', id]);
   }
 
+  goToParcels(): void {
+    this.router.navigate(['/parcels']);
+  }
+
   getCurrentParcels(): Parcel[] {
     return this.activeTab === 'published' ? this.publishedParcels : this.acceptedParcels;
   }

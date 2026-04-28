@@ -32,3 +32,15 @@ export interface RegisterRequest {
   realName?: string;
   studentId?: string;
 }
+
+export interface UserDTO {
+  id: number;
+  username: string;
+  email: string;
+  phone: string;
+  realName: string;
+  studentId: string;
+  avatar: string;
+  status: number;
+  roles: string[];
+}

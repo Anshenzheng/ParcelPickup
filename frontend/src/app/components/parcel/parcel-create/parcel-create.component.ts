@@ -106,6 +106,10 @@ export class ParcelCreateComponent implements OnInit {
     });
   }
 
+  goToParcels(): void {
+    this.router.navigate(['/parcels']);
+  }
+
   private markFormGroupTouched(formGroup: FormGroup): void {
     Object.values(formGroup.controls).forEach(control => {
       control.markAsTouched();
