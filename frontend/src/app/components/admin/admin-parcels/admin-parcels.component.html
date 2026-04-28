@@ -1,0 +1,149 @@
+<div class="container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">订单管理</h1>
+      <p class="page-subtitle">管理所有快递代取订单</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary btn-sm" (click)="exportParcels()">
+        导出订单
+      </button>
+    </div>
+  </div>
+
+  <div class="filter-card card">
+    <div class="filter-section">
+      <label class="filter-label">状态筛选:</label>
+      <select 
+        class="form-control filter-select"
+        [(ngModel)]="selectedStatus"
+        (change)="onStatusChange()">
+        <option *ngFor="let option of statusOptions" [ngValue]="option.value">
+          {{ option.label }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+  </div>
+
+  <div *ngIf="!loading && parcels.length === 0" class="empty-state card">
+    <div class="empty-state-icon">📭</div>
+    <p class="empty-state-text">暂无订单</p>
+    <p class="empty-state-hint">请尝试调整筛选条件</p>
+  </div>
+
+  <div *ngIf="!loading && parcels.length > 0" class="orders-table card">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>订单号</th>
+          <th>快递信息</th>
+          <th>发布者</th>
+          <th>接单者</th>
+          <th>酬劳</th>
+          <th>状态</th>
+          <th>创建时间</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let parcel of parcels">
+          <td class="order-no">{{ parcel.orderNo }}</td>
+          <td>
+            <div class="parcel-info">
+              <div class="info-row">
+                <span class="info-label">快递点:</span>
+                <span class="info-value">{{ parcel.expressPoint?.name || '未知' }}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">送达:</span>
+                <span class="info-value">{{ parcel.deliveryAddress }}</span>
+              </div>
+              <div class="info-row">
+                <span class="info-label">取件码:</span>
+                <span class="info-value highlight">{{ parcel.pickupCode }}</span>
+              </div>
+            </div>
+          </td>
+          <td>{{ parcel.publisher?.username || '未知' }}</td>
+          <td>{{ parcel.acceptor?.username || '待接单' }}</td>
+          <td class="reward">¥{{ parcel.reward }}</td>
+          <td>
+            <span class="badge" [ngClass]="getStatusBadge(parcel.status)">
+              {{ getStatusName(parcel.status) }}
+            </span>
+          </td>
+          <td class="time">{{ formatDate(parcel.createdAt) }}</td>
+          <td>
+            <div class="action-btns">
+              <button class="btn btn-secondary btn-sm" (click)="goToDetail(parcel)">
+                详情
+              </button>
+              <ng-container *ngIf="parcel.status === 0">
+                <button class="btn btn-primary btn-sm" (click)="openReviewModal(parcel)">
+                  审核
+                </button>
+              </ng-container>
+              <ng-container *ngIf="parcel.status !== 4 && parcel.status !== 5 && parcel.status !== 6">
+                <button class="btn btn-danger btn-sm" (click)="removeParcel(parcel)">
+                  下架
+                </button>
+              </ng-container>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <app-pagination 
+    *ngIf="pageResult && pageResult.totalPages > 1"
+    [pageResult]="pageResult"
+    (pageChange)="onPageChange($event)">
+  </app-pagination>
+
+  <div *ngIf="showReviewModal" class="modal-overlay" (click)="closeReviewModal()">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3 class="modal-title">审核订单</h3>
+        <button class="modal-close" (click)="closeReviewModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="order-summary" *ngIf="selectedParcel">
+          <div class="summary-item">
+            <span class="summary-label">订单号:</span>
+            <span class="summary-value">{{ selectedParcel.orderNo }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">快递点:</span>
+            <span class="summary-value">{{ selectedParcel.expressPoint?.name }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">送达地点:</span>
+            <span class="summary-value">{{ selectedParcel.deliveryAddress }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">酬劳:</span>
+            <span class="summary-value reward">¥{{ selectedParcel.reward }}</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">审核备注</label>
+          <textarea 
+            class="form-control"
+            [(ngModel)]="reviewRemark"
+            rows="3"
+            placeholder="请输入审核备注（可选）"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeReviewModal()">取消</button>
+        <button class="btn btn-danger" (click)="rejectParcel()">拒绝</button>
+        <button class="btn btn-success" (click)="approveParcel()">通过</button>
+      </div>
+    </div>
+  </div>
+</div>

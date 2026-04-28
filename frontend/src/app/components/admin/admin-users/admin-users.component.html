@@ -1,0 +1,88 @@
+<div class="container">
+  <div class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">用户管理</h1>
+      <p class="page-subtitle">管理系统用户</p>
+    </div>
+  </div>
+
+  <div class="filter-card card">
+    <div class="filter-section">
+      <label class="filter-label">状态筛选:</label>
+      <select 
+        class="form-control filter-select"
+        [(ngModel)]="selectedStatus"
+        (change)="onStatusChange()">
+        <option *ngFor="let option of statusOptions" [ngValue]="option.value">
+          {{ option.label }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+  </div>
+
+  <div *ngIf="!loading && users.length === 0" class="empty-state card">
+    <div class="empty-state-icon">👥</div>
+    <p class="empty-state-text">暂无用户</p>
+    <p class="empty-state-hint">请尝试调整筛选条件</p>
+  </div>
+
+  <div *ngIf="!loading && users.length > 0" class="users-table card">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>用户名</th>
+          <th>邮箱</th>
+          <th>手机号</th>
+          <th>真实姓名</th>
+          <th>学号</th>
+          <th>角色</th>
+          <th>状态</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>
+            <div class="user-info">
+              <span class="user-avatar">{{ user.username.charAt(0).toUpperCase() }}</span>
+              <span class="username">{{ user.username }}</span>
+            </div>
+          </td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.phone || '-' }}</td>
+          <td>{{ user.realName || '-' }}</td>
+          <td>{{ user.studentId || '-' }}</td>
+          <td>
+            <span class="badge" [class.badge-primary]="isAdmin(user)" [class.badge-secondary]="!isAdmin(user)">
+              {{ isAdmin(user) ? '管理员' : '普通用户' }}
+            </span>
+          </td>
+          <td>
+            <span class="badge" [ngClass]="getStatusBadge(user.status)">
+              {{ getStatusName(user.status) }}
+            </span>
+          </td>
+          <td>
+            <button 
+              class="btn btn-sm"
+              [class.btn-warning]="user.status === 1"
+              [class.btn-success]="user.status === 0"
+              (click)="toggleUserStatus(user)">
+              {{ user.status === 1 ? '禁用' : '启用' }}
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <app-pagination 
+    *ngIf="pageResult && pageResult.totalPages > 1"
+    [pageResult]="pageResult"
+    (pageChange)="onPageChange($event)">
+  </app-pagination>
+</div>

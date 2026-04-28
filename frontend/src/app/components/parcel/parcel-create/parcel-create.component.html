@@ -1,0 +1,168 @@
+<div class="container">
+  <div class="page-header">
+    <h1 class="page-title">发布快递代取需求</h1>
+    <p class="page-subtitle">填写快递信息，等待同学接单</p>
+  </div>
+
+  <div class="create-form-container card">
+    <form [formGroup]="parcelForm" (ngSubmit)="onSubmit()" class="create-form">
+      <div *ngIf="error" class="alert alert-danger">
+        {{ error }}
+      </div>
+      <div *ngIf="success" class="alert alert-success">
+        {{ success }}
+      </div>
+
+      <div class="form-section">
+        <h3 class="section-title">基本信息</h3>
+        
+        <div class="form-group">
+          <label class="form-label">快递点 <span class="required">*</span></label>
+          <select 
+            formControlName="expressPointId" 
+            class="form-control"
+            [class.invalid]="f['expressPointId'].touched && f['expressPointId'].invalid">
+            <option value="">请选择快递点</option>
+            <option *ngFor="let point of expressPoints" [value]="point.id">
+              {{ point.name }} - {{ point.address }}
+            </option>
+          </select>
+          <div *ngIf="f['expressPointId'].touched && f['expressPointId'].invalid" class="form-error">
+            请选择快递点
+          </div>
+        </div>
+
+        <div class="grid grid-2">
+          <div class="form-group">
+            <label class="form-label">取件码 <span class="required">*</span></label>
+            <input 
+              type="text" 
+              formControlName="pickupCode" 
+              class="form-control"
+              [class.invalid]="f['pickupCode'].touched && f['pickupCode'].invalid"
+              placeholder="请输入取件码"
+            >
+            <div *ngIf="f['pickupCode'].touched && f['pickupCode'].invalid" class="form-error">
+              请输入取件码
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">酬劳(元) <span class="required">*</span></label>
+            <input 
+              type="number" 
+              formControlName="reward" 
+              class="form-control"
+              [class.invalid]="f['reward'].touched && f['reward'].invalid"
+              placeholder="请输入酬劳金额"
+              min="1"
+              step="0.5"
+            >
+            <div *ngIf="f['reward'].touched && f['reward'].invalid" class="form-error">
+              请输入有效的酬劳金额（至少1元）
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="section-title">送达信息</h3>
+        
+        <div class="form-group">
+          <label class="form-label">送达地点 <span class="required">*</span></label>
+          <input 
+            type="text" 
+            formControlName="deliveryAddress" 
+            class="form-control"
+            [class.invalid]="f['deliveryAddress'].touched && f['deliveryAddress'].invalid"
+            placeholder="请输入详细送达地址（如：东校区1号宿舍楼501室）"
+          >
+          <div *ngIf="f['deliveryAddress'].touched && f['deliveryAddress'].invalid" class="form-error">
+            请输入送达地点
+          </div>
+        </div>
+
+        <div class="grid grid-2">
+          <div class="form-group">
+            <label class="form-label">联系人姓名 <span class="required">*</span></label>
+            <input 
+              type="text" 
+              formControlName="contactPerson" 
+              class="form-control"
+              [class.invalid]="f['contactPerson'].touched && f['contactPerson'].invalid"
+              placeholder="请输入联系人姓名"
+            >
+            <div *ngIf="f['contactPerson'].touched && f['contactPerson'].invalid" class="form-error">
+              请输入联系人姓名
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">联系电话 <span class="required">*</span></label>
+            <input 
+              type="tel" 
+              formControlName="contactPhone" 
+              class="form-control"
+              [class.invalid]="f['contactPhone'].touched && f['contactPhone'].invalid"
+              placeholder="请输入手机号码"
+            >
+            <div *ngIf="f['contactPhone'].touched && f['contactPhone'].invalid" class="form-error">
+              <span *ngIf="f['contactPhone'].errors?.['required']">请输入联系电话</span>
+              <span *ngIf="f['contactPhone'].errors?.['pattern']">请输入有效的手机号码</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3 class="section-title">补充信息（选填）</h3>
+        
+        <div class="grid grid-2">
+          <div class="form-group">
+            <label class="form-label">包裹类型</label>
+            <select formControlName="parcelType" class="form-control">
+              <option value="">请选择</option>
+              <option value="文件">文件</option>
+              <option value="小件">小件</option>
+              <option value="中件">中件</option>
+              <option value="大件">大件</option>
+              <option value="生鲜">生鲜</option>
+              <option value="易碎品">易碎品</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">预估重量(kg)</label>
+            <input 
+              type="number" 
+              formControlName="weight" 
+              class="form-control"
+              placeholder="请输入预估重量"
+              min="0"
+              step="0.1"
+            >
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">备注说明</label>
+          <textarea 
+            formControlName="remark" 
+            class="form-control"
+            rows="3"
+            placeholder="如有特殊要求请在此说明..."></textarea>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="router.navigate(['/parcels'])">
+          取消
+        </button>
+        <button type="submit" class="btn btn-primary" [disabled]="submitting || parcelForm.invalid">
+          <span *ngIf="!submitting">发布订单</span>
+          <span *ngIf="submitting">发布中...</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
