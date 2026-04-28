@@ -77,15 +77,3 @@ export class AdminService {
     return this.http.get(API_URL + 'export/statistics', { responseType: 'blob' });
   }
 }
-
-export interface UserDTO {
-  id: number;
-  username: string;
-  email: string;
-  phone: string;
-  realName: string;
-  studentId: string;
-  avatar: string;
-  status: number;
-  roles: string[];
-}

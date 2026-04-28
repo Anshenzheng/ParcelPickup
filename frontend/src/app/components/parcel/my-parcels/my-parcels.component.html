@@ -50,7 +50,7 @@
     <p class="empty-state-hint">
       {{ activeTab === 'published' ? '快来发布第一个订单吧' : '去快递大厅看看有没有合适的订单' }}
     </p>
-    <button class="btn btn-primary" (click)="activeTab === 'published' ? goToCreate() : router.navigate(['/parcels'])">
+    <button class="btn btn-primary" (click)="activeTab === 'published' ? goToCreate() : goToParcels()">
       {{ activeTab === 'published' ? '发布需求' : '去大厅' }}
     </button>
   </div>
